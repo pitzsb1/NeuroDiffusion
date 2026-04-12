@@ -2,13 +2,13 @@
 
 ### 딥러닝 참고 프로젝트 제안서
 
-Info.
+**Info.**
 
 원시 뇌파(Raw EEG) 시계열 데이터를 2D 이미지 형태인 스펙트로그램(Spectrogram)으로 변환하는 최적화된 데이터 전처리 파이프라인을 구축하고, 이를 이미지 인식 모델(EfficientNet)의 학습용 데이터셋으로 가공하는 방법론을 중점적으로 참고함.
 
-GOAL: 고차원 시계열 신호의 주파수 특성을 보존하면서, 딥러닝 모델이 패턴을 학습하기 용이한 이미지 형태의 특성(Feature) 추출
+**GOAL**: 고차원 시계열 신호의 주파수 특성을 보존하면서, 딥러닝 모델이 패턴을 학습하기 용이한 이미지 형태의 특성(Feature) 추출
 
-DATA: HMS - Harmful Brain Activity Classification
+**DATA**: HMS - Harmful Brain Activity Classification
 
 ### 참고 프로젝트 선정 이유
 
@@ -18,35 +18,35 @@ DATA: HMS - Harmful Brain Activity Classification
 
 <img width="1120" height="1016" alt="image" src="https://github.com/user-attachments/assets/2332a41e-ffc2-4541-bfce-2b6f847f4321" />
 
-원본 데이터 출처: Harvard Medical School
+**원본 데이터 출처**: Harvard Medical School
 
-데이터 크기 및 구성
-- Train Set: 약 106,800개의 행(row)으로 구성된 메타데이터(train.csv)와 수만 개의 EEG/Spectrogram 개별 파일
-- Test Set: 1개 (대회 규정)
+**데이터 크기 및 구성**
+- **Train Set**: 약 106,800개의 행(row)으로 구성된 메타데이터(train.csv)와 수만 개의 EEG/Spectrogram 개별 파일
+- **Test Set**: 1개 (대회 규정)
 
-EEG data(**독립 변수 x**): Fp1/Fp2(전두엽 앞쪽), F3/F4(전두엽), C3/C4(중앙), P3/P4(두정엽), O1/O2(후두엽), T3/T4(측두엽), Fz/Cz/Pz(중앙 라인), EKG(심전도) (총 20개 채널)
+**EEG data(독립 변수 x)** Fp1/Fp2(전두엽 앞쪽), F3/F4(전두엽), C3/C4(중앙), P3/P4(두정엽), O1/O2(후두엽), T3/T4(측두엽), Fz/Cz/Pz(중앙 라인), EKG(심전도) (총 20개 채널)
 
 _filtered spectogream_: 위 19개 채널을 그대로 쓰지 않고, 4개의 영역(LL, LP, RP, RR)으로 묶어 이미지화. 각 영역은 128(주파수) x 256(시간) 크기의 행렬(Matrix) 데이터가 되어 모델의 입력값이 됨.
 
-Spectogram images(**종속 변수 y**): 파동을 이미지로 변환.
+**Spectogram images(종속 변수 y)**: 파동을 이미지로 변환.
 
 ## 데이터 전처리
 
 ### 결측치 처리 및 피처 엔지니어링
 
-결측치: EEG 신호 내에 결측치가 발생한 경우, 해당 신호의 평균값(np.nanmean)으로 채우거나 결측치가 과할 경우 해당 구간을 0으로 처리하여 모델 학습의 불안정성을 방지
+**결측치**: EEG 신호 내에 결측치가 발생한 경우, 해당 신호의 평균값(np.nanmean)으로 채우거나 결측치가 과할 경우 해당 구간을 0으로 처리하여 모델 학습의 불안정성을 방지
 
-피처 엔지니어링:
+**피처 엔지니어링**
 
-- 바이폴라 몽타주 (Bipolar Montage)
+- **바이폴라 몽타주 (Bipolar Montage)**
 
 단일 전극의 절대값이 아닌, 인접 전극 간의 차이($Fp1 - F3$, $F3 - C3$ 등)를 계산하여 노이즈를 상쇄하고 뇌의 국소적인 전기 활동 변화를 극대화함.
 
-- 신호 정제 (Denoising)
+- **신호 정제 (Denoising)**
 
 시계열 데이터에 포함된 미세한 잡음을 제거하기 위해 Wavelet Transform 또는 저주파 필터링을 적용하여 신호의 순도를 높임.
 
-- 로그 변환 및 정규화 (Log-Scaling & Normalization)
+- **로그 변환 및 정규화 (Log-Scaling & Normalization)**
 
 주파수 에너지 밀도의 편차를 줄이기 위해 로그 스케일을 적용하고, 딥러닝 모델의 빠른 수렴을 위해 전체 데이터를 정규화함.
 
@@ -64,15 +64,15 @@ Spectogram images(**종속 변수 y**): 파동을 이미지로 변환.
 
 ### 왜 CNN(EfficientNet)인가?
 
-- 시각적 패턴 인식
+- **시각적 패턴 인식**
 
 뇌파의 이상 현상은 특정 주파수 대역에서 시각적인 무늬(Texture)로 나타나므로, CNN의 특성 추출 기능이 매우 효과적임.
 
-- 전이 학습 (Transfer Learning)
+- **전이 학습 (Transfer Learning)**
 
 이미지넷(ImageNet)으로 사전 학습된 가중치를 활용하여, 적은 데이터로도 뇌파 이미지의 고유 특징을 빠르게 파악 가능함.
 
-- 다채널 병합 처리
+- **다채널 병합 처리**
 
 4개 영역의 스펙트로그램을 하나의 채널로 결합하여 뇌의 전체적인 활성 상태를 통합적으로 분석하기에 적합함.
 
@@ -87,23 +87,24 @@ Spectogram images(**종속 변수 y**): 파동을 이미지로 변환.
 - 두 분포가 완벽하게 일치하면 값은 0이 됨. 즉 예측이 틀릴수록 값이 커지는 손실 개념의 지표.
 
 ### 한계 극복을 위한 시도 및 최적화 전략
+
 단순히 층을 쌓는 것만으로는 부족하기 때문에, 모델의 안정성과 성능을 높이기 위한 몇 가지 하이퍼파라미터와 기법들을 포함
 
-1. 5-Fold 교차 검증 (Cross Validation)
+1. **5-Fold 교차 검증 (Cross Validation)**
 
 데이터를 5개 그룹으로 나누어 학습과 검증을 반복. 특정 데이터셋에만 과적합되는 것을 방지하고, 모델의 일반화 성능을 확보하기 위함. 특히 환자 ID(patient_id)를 기준으로 그룹을 나누어(GroupKFold), 동일 인물의 데이터가 학습과 검증에 동시에 들어가지 않도록 철저히 격리.
 
-2. 하이퍼파라미터 및 학습 전략 최적화
+2. **하이퍼파라미터 및 학습 전략 최적화**
 
-- Learning Rate Scheduler: 학습 초기에는 학습률을 높게 가져가다가 점차 줄여나가는 방식을 사용하여 최적의 가중치에 안정적으로 도달하게 함.
+- **Learning Rate Scheduler**: 학습 초기에는 학습률을 높게 가져가다가 점차 줄여나가는 방식을 사용하여 최적의 가중치에 안정적으로 도달하게 함.
 
-- Mixed Precision Training: FP16 계산법을 사용하여 메모리 사용량을 줄이고 학습 속도를 2배 이상 높임.
+- **Mixed Precision Training**: FP16 계산법을 사용하여 메모리 사용량을 줄이고 학습 속도를 2배 이상 높임.
 
-3. 데이터 앙상블 (Ensemble & Augmentation)
+3. **데이터 앙상블 (Ensemble & Augmentation)**
 
 Kaggle에서 기본 제공하는 10분짜리 스펙트로그램과 개발자 자신이 EEG로 직접 만든 50초짜리 스펙트로그램을 함께 입력(Multi-Input)으로 사용. 서로 다른 시간적 범위를 가진 데이터를 결합했을 때 성능이 크게 향상됨을 확인. 또한 스펙트로그램 이미지를 좌우로 반전시켜 데이터의 양을 늘리고, 모델이 좌우 대칭적인 뇌파 패턴에 유연하게 대응하도록 학습시킴.
 
-4. 모델 앙상블
+4. **모델 앙상블**
 
 딥러닝(CNN) 모델의 예측값과 머신러닝(CatBoost) 모델의 예측값을 가중 평균(Weighted Average)하여 최종 결과를 산출. 각 모델의 장점이 결합되어 단일 모델보다 낮은 KL Divergence 값을 기록함.
 
