@@ -1,117 +1,180 @@
-# Diffusion-based Patient-Specific EEG Augmentation & Classification
+# Diffusion-Based Patient-Specific EEG Augmentation for Harmful Brain Activity Classification
 
 ## Overview
 
-This project proposes a patient-specific EEG classification system enhanced by time-series diffusion-based data augmentation.
-We address the critical challenge of data scarcity in epileptic seizure detection by generating realistic synthetic EEG signals and leveraging them to improve classification performance across 6 harmful brain activity types.
+This project focuses on improving EEG-based harmful brain activity classification by addressing data scarcity and class imbalance using **time-series diffusion models**.
+
+We generate realistic synthetic EEG signals tailored to individual patients and use them to train a high-performance deep learning classifier for detecting 6 types of harmful brain activity.
+
+---
 
 ## Objectives
 
-Patient-specific data augmentation
+* **Patient-Specific Data Augmentation**
+  Generate synthetic EEG signals using limited seizure data per patient.
 
-Generate high-quality synthetic EEG signals using limited seizure data
+* **High-Recall Classification Model**
+  Improve recall and F1-score for detecting harmful brain activity.
 
-High-precision classification
+* **Class Imbalance Mitigation**
+  Balance rare classes (e.g., seizure) using synthetic data.
 
-Improve recall for seizure detection using deep learning models
+---
 
-Class imbalance mitigation
+## Dataset
 
-Reduce bias caused by rare pathological EEG patterns
+* **Competition**: Harmful Brain Activity Classification
+* **Source**: Harvard Medical School
+* **Size**: ~106,800 samples
 
-## Dataset | Harmful Brain Activity Classification (~106,800 samples)
- 
-This project uses the HMS Harmful Brain Activity Classification dataset.
-
-Download via Kaggle API:
+### Download via Kaggle API
 
 ```bash
 kaggle competitions download -c hms-harmful-brain-activity-classification
 ```
 
-Source: Harvard Medical School
+---
 
-### key Features
+## Data Description
 
-EEG Signals (Input, X)
+### Input Features (EEG Signals)
 
-**20-channel time-series data**:
+* 20-channel EEG signals:
 
-Frontal: Fp1, Fp2, F3, F4
+  * Frontal: Fp1, Fp2, F3, F4
+  * Central: C3, C4, Cz
+  * Parietal: P3, P4, Pz
+  * Occipital: O1, O2
+  * Temporal: T3, T4, T5, T6
+  * Midline: Fz
+  * EKG (heart signal)
 
-Central: C3, C4, Cz
+### Target Labels (6 Classes)
 
-Parietal: P3, P4, Pz
+* Seizure
+* LPD (Lateralized Periodic Discharges)
+* GPD (Generalized Periodic Discharges)
+* LRDA (Lateralized Rhythmic Delta Activity)
+* GRDA (Generalized Rhythmic Delta Activity)
+* Other
 
-Occipital: O1, O2
+Labels are derived from expert voting distributions.
 
-Temporal: T3, T4, T5, T6
+---
 
-Others: Fz, EKG
+## Methodology
 
-Target Labels (Output, y)
+### 1. Time-Series Diffusion Model
 
-**6-class expert-voted brain activity**:
+* Models: **SSSD / DiffWave**
+* Generates realistic EEG signals preserving temporal and spectral characteristics
 
-Seizure
+### 2. Conditional Generation
 
-LPD (Lateralized Periodic Discharges)
+* Conditioned on:
 
-GPD (Generalized Periodic Discharges)
+  * Patient ID
+  * Label type
+* Enables targeted synthesis of rare patterns (e.g., seizure-specific EEG)
 
-LRDA (Lateralized Rhythmic Delta Activity)
+### 3. Training Strategy
 
-GRDA (Generalized Rhythmic Delta Activity)
+* Combine:
 
-Other
+  * Real EEG data
+  * Synthetic EEG data
+* Train deep learning classifier (e.g., CNN, Transformer-based models)
 
-## Motivation
+### 4. Evaluation (TSTR)
 
-1. Data Scarcity
-Seizure events are rare compared to normal EEG signals, making it difficult to train robust models.
+* **Train on Synthetic, Test on Real**
+* Metrics:
 
-2. Patient Variability
-EEG patterns vary significantly across patients, limiting generalization.
+  * Recall (primary)
+  * F1-score
+  * Accuracy
 
-3. Opportunity with Generative AI
-Recent advances in time-series diffusion models enable realistic signal generation, providing a solution to data imbalance.
+---
 
-## Key Features
+## Project Structure
 
-Time-Series Diffusion Engine
+```
+.
+├── data/
+│   ├── raw/
+│   ├── processed/
+├── models/
+│   ├── diffusion/
+│   ├── classifier/
+├── notebooks/
+├── src/
+│   ├── preprocessing.py
+│   ├── train_diffusion.py
+│   ├── generate_synthetic.py
+│   ├── train_classifier.py
+│   └── evaluate.py
+├── results/
+└── README.md
+```
 
-Based on architectures like SSSD or DiffWave
+---
 
-Preserves temporal dynamics, frequency, and phase information
+## Training Pipeline
 
-## Conditional Data Synthesis
+1. **Data Profiling**
 
-Generates EEG signals conditioned on:
+   * Extract patient-specific seizure segments
 
-Patient ID
+2. **Diffusion Model Training**
 
-Brain activity type
+   * Train on real EEG signals
 
-## Evaluation Pipeline (TSTR)
+3. **Synthetic Data Generation**
 
-Train on Synthetic, Test on Real
+   * Generate patient-conditioned EEG samples
 
-Quantitative validation of synthetic data quality
+4. **Classifier Training**
 
-## Expected Impact
+   * Train with augmented dataset
 
-Enhanced rare disease research
+5. **Evaluation**
 
-Enables robust modeling even with limited seizure data
+   * Compare performance before/after augmentation
 
-Improved diagnostic accuracy
+---
 
-Higher recall and reduced false negatives
+## Expected Results
 
-Scalable medical AI
+* Improved recall for seizure detection
+* Better generalization across patients
+* Reduced class imbalance impact
 
-Reduces dependency on large-scale clinical datasets
+---
+
+## Key Contributions
+
+* Patient-specific EEG augmentation using diffusion models
+* Practical application of generative AI in healthcare
+* Validation via TSTR framework
+
+---
+
+## Future Work
+
+* Real-time EEG monitoring system
+* Deployment in clinical environments
+* Extension to other neurological disorders
+
+---
+
+## References
+
+* DiffWave: A Versatile Diffusion Model for Audio Synthesis
+* SSSD: Structured State Space Diffusion Models
+* EEG Signal Processing Literature
+
+---
 
 ## Conclusion
 
-This project demonstrates the potential of a data augmentation engine that enables high-performance, patient-specific EEG classification using only limited real-world data.
+This project demonstrates that **synthetic data generation using diffusion models** can effectively overcome data scarcity in EEG-based medical AI systems, enabling more accurate and personalized diagnosis.
