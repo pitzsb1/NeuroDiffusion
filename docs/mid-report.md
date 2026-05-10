@@ -1,4 +1,4 @@
-# 프로젝트 중간보고 | NeuroDiffusion
+# 프로젝트 중간보고 | Diffusion-Based Patient-Specific EEG Augmentation for Harmful Brain Activity Classification
 
 ## 1. 프로젝트 개요
 
