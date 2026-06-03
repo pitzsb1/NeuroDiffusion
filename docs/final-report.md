@@ -97,14 +97,6 @@ Std ≈ 1
 
 ---
 
-# Diffusion Framework
-
-<img width="1018" height="1176" alt="image" src="https://github.com/user-attachments/assets/5c9f2ae6-f593-4e97-b839-dce00b71974a" />
-
-Diffusion-Based EEG Generation Framework
-
----
-
 # 4. Diffusion 기반 EEG 생성
 
 ## Forward Diffusion
