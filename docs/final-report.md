@@ -4,7 +4,7 @@
 
 # 0. 연구 배경
 
-EEG(Electroencephalography)는 뇌의 전기적 활동을 측정하는 대표적인 생체 신호로, 간질(Seizure), GPD, GRDA 등 다양한 신경학적 이상 패턴을 진단하는 데 활용된다.
+EEG(Electroencephalography)는 뇌의 전기적 활동을 측정하는 대표적인 생체 신호로, 뇌전증(Seizure), GPD, GRDA 등 다양한 신경학적 이상 패턴을 진단하는 데 활용된다.
 
 최근에는 EEG 데이터를 활용한 딥러닝 기반 자동 진단 연구가 활발하게 진행되고 있으나, 실제 의료 데이터는 클래스 불균형(Class Imbalance) 문제가 심각하게 존재한다. 특히 발작(Seizure)과 같은 이상 신호는 정상 신호에 비해 수집이 어렵고 데이터 수가 제한적이다.
 
